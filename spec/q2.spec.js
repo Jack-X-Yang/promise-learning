@@ -109,7 +109,7 @@ describe("promise v2", function () {
 
     });
 
-    it("can use then", function (done) {
+    it("then chaining", function (done) {
         var promise = new Promise(oneSecondLater);
 
         function oneSecondLater(resolve) {
