@@ -1,0 +1,16 @@
+{
+  "name": "promise-learning",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "author": "",
+  "license": "GNU GENERAL PUBLIC LICENSE",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-jasmine": "^2.4.0",
+    "jasmine-reporters": "^2.2.0"
+  }
+}
