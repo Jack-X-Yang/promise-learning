@@ -36,6 +36,10 @@ function Promise(fun) {
         };
     }
 
+    function done() {
+        return undefined;
+    }
+
     function resolve(_value) {
         value = ret(_value);
         if (pending) {
@@ -53,9 +57,7 @@ function Promise(fun) {
         }
     }
 
-    function reject(reason) {
-        resolve(errRet(reason));
-    }
+
 
     function then(_callback, _errback) {
         var promise = new Promise();
@@ -84,6 +86,7 @@ function Promise(fun) {
             }
         };
 
+
         if (pending) {
             pending.push([callback, errback]);
         } else {
@@ -95,8 +98,79 @@ function Promise(fun) {
         return promise;
     }
 
-    function done() {
-        return undefined;
+    function isPromise(value) {
+        return value && (typeof value.then == "function");
+    }
+
+
+    function race(promises) {
+        var promise = new Promise();
+        var isResolved = false;
+
+        function callback(value) {
+            if (!isResolved) {
+                promise.resolve(value);
+                isResolved = true;
+            }
+        }
+
+        function errback(reason) {
+            if (!isResolved) {
+                promise.reject(reason);
+                isResolved = true;
+            }
+        }
+
+        promises.forEach(function (_promise) {
+            if (!isResolved && isPromise(_promise)) {
+                _promise.then(callback, errback);
+            }
+        });
+
+        return promise;
+    }
+
+    function all(promises) {
+        var promise = new Promise();
+        var promiseCount = 0;
+        var resolvedPromiseCount = 0;
+        var allResolvedValue = [];
+        var isRejected = false;
+
+        function callback(index) {
+            return function (value) {
+                resolvedPromiseCount++;
+                allResolvedValue[index] = value;
+                if (promiseCount == resolvedPromiseCount) {
+                    promise.resolve(allResolvedValue);
+                    resolvedPromiseCount = 0;
+                }
+            };
+        }
+
+        function errback(reason) {
+            if (isRejected) {
+                return;
+            } else {
+                isRejected = true;
+                promise.reject(reason);
+            }
+        }
+
+        promises.forEach(function (_promise, index) {
+            if (!isRejected && isPromise(_promise)) {
+                promiseCount++;
+                _promise.then(callback(index), errback);
+            } else {
+                allResolvedValue[index] = _promise;
+            }
+        });
+
+        return promise;
+    }
+
+    function reject(reason) {
+        resolve(errRet(reason));
     }
 
     function _catch(callback) {
@@ -104,6 +178,9 @@ function Promise(fun) {
     }
 
     fun && fun(resolve, reject);
+
+    Promise.race = race;
+    Promise.all = all;
 
     return {
         then: then,

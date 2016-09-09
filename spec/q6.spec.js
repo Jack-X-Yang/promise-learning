@@ -1,7 +1,7 @@
-var Promise = require('../src/promise.v5.js');
+var Promise = require('../src/promise.v6.js');
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
-describe("promise v5", function () {
+describe("promise v6", function () {
 
     describe("promise properties", function () {
 
@@ -18,6 +18,16 @@ describe("promise v5", function () {
         it("should have reject function", function () {
             var promise = new Promise();
             expect(typeof promise.reject).toBe("function");
+        });
+
+        it("should have done function", function () {
+            var promise = new Promise();
+            expect(typeof promise.done).toBe("function");
+        });
+
+        it("should have catch function", function () {
+            var promise = new Promise();
+            expect(typeof promise.catch).toBe("function");
         });
 
     });
@@ -64,7 +74,7 @@ describe("promise v5", function () {
                 }, 500);
             }
 
-            promise.then(function () {}, function (reason) {
+            promise.then(function () { }, function (reason) {
                 expect(reason).toBe(123);
             });
         });
@@ -79,7 +89,7 @@ describe("promise v5", function () {
                 }, 500);
             })(promise.resolve, promise.reject);
 
-            promise.then(function () {}, function (reason) {
+            promise.then(function () { }, function (reason) {
                 expect(reason).toBe(123);
             });
         });
@@ -198,12 +208,34 @@ describe("promise v5", function () {
         promise.then(function (value) {
             expect(value).toBe(123);
             throw "reject";
-        }).then(function (value) {}, function (reason) {
+        }).then(function (value) { }, function (reason) {
             expect(reason).toBe("reject");
             return 1234;
         }).then(function (value) {
             expect(value).toBe(1234);
         });
+    });
+
+    it("catch the throw", function () {
+        var promise = new Promise(function (resolve, reject) {
+            reject(123);
+        });
+
+        promise.catch(function (reason) {
+            expect(reason).toBe(123);
+        });
+    });
+
+    it("done method return undefined", function () {
+        var promise = new Promise(function (resolve, reject) {
+            resolve(123);
+        });
+
+        var done = promise.then(function (value) {
+            expect(value).toBe(123);
+        }).done();
+
+        expect(done).toBeUndefined();
     });
 
 });

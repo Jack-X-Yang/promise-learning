@@ -1,4 +1,5 @@
 var Promise = require('../src/promise.v2.js');
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
 describe("promise v2", function () {
 
@@ -25,7 +26,7 @@ describe("promise v2", function () {
                 setTimeout(function () {
                     resolve(123);
                     done();
-                }, 1000);
+                }, 500);
             }
 
             promise.then(function (value) {
@@ -40,7 +41,7 @@ describe("promise v2", function () {
                 setTimeout(function () {
                     resolve(123);
                     done();
-                }, 1000);
+                }, 500);
             })(promise.resolve);
 
             promise.then(function (value) {
@@ -61,7 +62,7 @@ describe("promise v2", function () {
                 done();
                 expect(then1).toHaveBeenCalled();
                 expect(then2).toHaveBeenCalled();
-            }, 1000);
+            }, 500);
         }
 
         promise.then(then1);
@@ -85,7 +86,7 @@ describe("promise v2", function () {
                 expect(value).toBe(123);
             });
             done();
-        }, 2000);
+        }, 800);
 
     });
 
@@ -98,7 +99,7 @@ describe("promise v2", function () {
                     resolve(123);
                 }).toThrow(new Error("A promise can only be resolved once !"));
                 done();
-            }, 1000);
+            }, 500);
 
             resolve(123);
         }
@@ -117,7 +118,7 @@ describe("promise v2", function () {
 
                 resolve(123);
                 done();
-            }, 1000);
+            }, 500);
         }
 
         promise.then(function (value) {

@@ -1,4 +1,5 @@
 var Promise = require('../src/promise.v0.js');
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
 describe("promise v0", function() {
 
@@ -25,7 +26,7 @@ describe("promise v0", function() {
                 setTimeout(function() {
                     resolve(123);
                     done();
-                }, 1000);
+                }, 500);
             }
 
             promise.then(function(value) {
@@ -40,7 +41,7 @@ describe("promise v0", function() {
                 setTimeout(function() {
                     resolve(123);
                     done();
-                }, 1000);
+                }, 500);
             })(promise.resolve);
 
             promise.then(function(value) {
